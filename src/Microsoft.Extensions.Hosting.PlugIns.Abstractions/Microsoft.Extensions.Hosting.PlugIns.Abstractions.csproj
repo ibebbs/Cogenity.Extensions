@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>ibebbs</Authors>
+    <PackageProjectUrl>https://github.com/ibebbs/Microsoft.Extensions.Hosting.PlugIns</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ibebbs/Microsoft.Extensions.Hosting.PlugIns</RepositoryUrl>
+    <PackageTags>generic-host extensions plugins dotnet dotnet-core3</PackageTags>
+    <Version>1.0.1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0" />
+  </ItemGroup>
+
+</Project>

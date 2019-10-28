@@ -7,6 +7,7 @@
     <PackageProjectUrl>https://github.com/ibebbs/Microsoft.Extensions.Hosting.PlugIns</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ibebbs/Microsoft.Extensions.Hosting.PlugIns</RepositoryUrl>
     <PackageTags>generic-host extensions plugins dotnet dotnet-core3</PackageTags>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +20,10 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Extensions.Hosting.PlugIns.Abstractions\Microsoft.Extensions.Hosting.PlugIns.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
