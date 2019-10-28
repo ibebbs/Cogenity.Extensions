@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>ibebbs</Authors>
+    <PackageProjectUrl>https://github.com/ibebbs/Microsoft.Extensions.Hosting.PlugIns</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ibebbs/Microsoft.Extensions.Hosting.PlugIns</RepositoryUrl>
+    <PackageTags>generic-host extensions plugins dotnet dotnet-core3</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
