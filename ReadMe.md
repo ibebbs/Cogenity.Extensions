@@ -6,3 +6,7 @@ Similar to [Dapplo.Microsoft.Extensions.Hosting](https://github.com/dapplo/Dappl
 
 - Less time spent scanning directories
 - Add a plugin more than once [with different configuration]
+
+## Remarks
+
+Requires .NET Core 3.0

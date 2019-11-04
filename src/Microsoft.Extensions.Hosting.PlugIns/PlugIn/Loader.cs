@@ -8,6 +8,8 @@ namespace Microsoft.Extensions.Hosting.PlugIns.PlugIn
 {
     public class Loader
     {
+        private static readonly string HostDirectory = Path.GetDirectoryName(typeof(HostBuilderExtensions).Assembly.Location); // hostContext.HostingEnvironment.ContentRootPath
+
         private Configuration.Instance _configuration;
 
         public Loader(Configuration.Instance configuration)
@@ -22,7 +24,7 @@ namespace Microsoft.Extensions.Hosting.PlugIns.PlugIn
                 var fileName = Path.GetFileName(configuredPlugIn.Assembly);
                 var path = Path.GetDirectoryName(configuredPlugIn.Assembly);
                 
-                path = string.IsNullOrWhiteSpace(path) ? hostContext.HostingEnvironment.ContentRootPath : path;
+                path = string.IsNullOrWhiteSpace(path) ? HostDirectory : path;
 
                 var assemblyPath = Path.Combine(path, fileName);
 

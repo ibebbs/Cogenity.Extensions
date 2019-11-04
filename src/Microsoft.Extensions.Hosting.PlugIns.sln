@@ -5,7 +5,13 @@ VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Extensions.Hosting.PlugIns", "Microsoft.Extensions.Hosting.PlugIns\Microsoft.Extensions.Hosting.PlugIns.csproj", "{0EA26D4B-5F60-4164-8AD4-D5010E68E8B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Extensions.Hosting.PlugIns.Abstractions", "Microsoft.Extensions.Hosting.PlugIns.Abstractions\Microsoft.Extensions.Hosting.PlugIns.Abstractions.csproj", "{72090C46-8B91-4893-A88F-E5344781BB06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Extensions.Hosting.PlugIns.Abstractions", "Microsoft.Extensions.Hosting.PlugIns.Abstractions\Microsoft.Extensions.Hosting.PlugIns.Abstractions.csproj", "{72090C46-8B91-4893-A88F-E5344781BB06}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CA3EA60D-9394-4D15-8A14-F64875523A91}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{8FE3F8CD-46EB-43CE-AE65-4BBE87A2ED15}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericHostConsole", "..\samples\GenericHostConsole\GenericHostConsole.csproj", "{A6A49BB5-29F2-41FB-8BA9-97ECB2017C8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +27,18 @@ Global
 		{72090C46-8B91-4893-A88F-E5344781BB06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72090C46-8B91-4893-A88F-E5344781BB06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72090C46-8B91-4893-A88F-E5344781BB06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6A49BB5-29F2-41FB-8BA9-97ECB2017C8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6A49BB5-29F2-41FB-8BA9-97ECB2017C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6A49BB5-29F2-41FB-8BA9-97ECB2017C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6A49BB5-29F2-41FB-8BA9-97ECB2017C8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0EA26D4B-5F60-4164-8AD4-D5010E68E8B6} = {CA3EA60D-9394-4D15-8A14-F64875523A91}
+		{72090C46-8B91-4893-A88F-E5344781BB06} = {CA3EA60D-9394-4D15-8A14-F64875523A91}
+		{A6A49BB5-29F2-41FB-8BA9-97ECB2017C8C} = {8FE3F8CD-46EB-43CE-AE65-4BBE87A2ED15}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {062DB90B-58C2-40C8-BE44-DAB083471429}
