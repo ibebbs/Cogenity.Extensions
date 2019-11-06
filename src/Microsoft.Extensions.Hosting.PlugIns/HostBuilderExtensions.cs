@@ -1,31 +1,48 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System.Linq;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 
-namespace Microsoft.Extensions.Hosting.PlugIns
+namespace Microsoft.Extensions.Hosting.Composition
 {
     public static class HostBuilderExtensions
     {
-        private static bool Validation(Configuration.Instance options)
+        public static readonly string CompositionConfigurationSection = "Composition";
+
+        private static IConfigurationRoot Build(Action<IConfigurationBuilder> configurator)
         {
-            return true;
+            var configurationBuilder = new ConfigurationBuilder();
+
+            configurator.Invoke(configurationBuilder);
+
+            return configurationBuilder.Build();
         }
 
-        private static void LoadModules(HostBuilderContext hostContext, IServiceCollection serviceCollection, string configurationSection)
+        public static T Bind<T>(this IConfigurationSection configurationSection) where T : new()
         {
-            var optionsFactory = new OptionsFactory<Configuration.Instance>(
-                new[] { new NamedConfigureFromConfigurationOptions<Configuration.Instance>(Options.Options.DefaultName, hostContext.Configuration.GetSection(configurationSection)) },
-                Enumerable.Empty<IPostConfigureOptions<Configuration.Instance>>()
-            );
+            var instance = new T();
 
-            var configuration = optionsFactory.Create(Options.Options.DefaultName);
+            configurationSection.Bind(instance);
 
-            new PlugIn.Loader(configuration).Load(hostContext, serviceCollection);
+            return instance;
         }
 
-        public static IHostBuilder ConfigurePlugIns(this IHostBuilder hostBuilder, string configurationSection)
+        public static IHostBuilder UseComposition(this IHostBuilder hostBuilder, Action<IConfigurationBuilder> configurator, string configurationSection = null)
         {
-            return hostBuilder.ConfigureServices((hostingContext, serviceCollection) => LoadModules(hostingContext, serviceCollection, configurationSection));
+            // Adds the configuration specified in the configurator to the host
+            // for use later while the host is being built
+            hostBuilder.ConfigureHostConfiguration(configurator);
+
+            // Create a configuration root containing configuration from the configurator
+            var configurationRoot = Build(configurator);
+
+            // Get the composition configuration...
+            var configuration = configurationRoot
+                .GetSection(configurationSection ?? CompositionConfigurationSection)
+                .Bind<Configuration.Instance>();
+
+            // ... and use it to load all the configured modules
+            new Module.Loader(configuration).Load(hostBuilder);
+
+            return hostBuilder;
         }
     }
 }

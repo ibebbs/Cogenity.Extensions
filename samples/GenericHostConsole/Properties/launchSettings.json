@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GenericHostConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "config.yml"
+    }
+  }
+}

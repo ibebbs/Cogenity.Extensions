@@ -1,0 +1,9 @@
+﻿composition:
+  modules:
+    - name: ConsoleWriter
+      assembly: GenericHostConsole.Writer
+      configurationSection: consolewriterConfiguration
+      optional: true
+
+consolewriterConfiguration:
+  writeIntervalInSeconds: 2

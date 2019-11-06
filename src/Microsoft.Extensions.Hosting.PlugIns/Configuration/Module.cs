@@ -1,6 +1,6 @@
-﻿namespace Microsoft.Extensions.Hosting.PlugIns.Configuration
+﻿namespace Microsoft.Extensions.Hosting.Composition.Configuration
 {
-    public class PlugIn
+    public class Module
     {
         /// <summary>
         /// The unique name of this plug in instance

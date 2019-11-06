@@ -5,13 +5,13 @@ using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
 
-namespace Microsoft.Extensions.Hosting.PlugIns.PlugIn
+namespace Microsoft.Extensions.Hosting.Composition.Module
 {
-    internal class PluginLoadContext : AssemblyLoadContext
+    internal class LoadContext : AssemblyLoadContext
     {
         private readonly AssemblyDependencyResolver _resolver;
 
-        public PluginLoadContext(string pluginPath, string name) : base(name)
+        public LoadContext(string pluginPath, string name) : base(name)
         {
             _resolver = new AssemblyDependencyResolver(pluginPath);
         }

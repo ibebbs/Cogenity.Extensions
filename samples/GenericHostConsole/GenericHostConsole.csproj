@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,7 +7,19 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.PlugIns" Version="1.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0" />
+    <PackageReference Include="NetEscapades.Configuration.Yaml" Version="1.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.Extensions.Hosting.PlugIns.Abstractions\Microsoft.Extensions.Hosting.Composition.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.Extensions.Hosting.PlugIns\Microsoft.Extensions.Hosting.Composition.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="config.yml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

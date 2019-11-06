@@ -1,0 +1,1 @@
+﻿Copy-Item '..\GenericHostConsole.Writer\bin\debug\netstandard2.0\*' '.\bin\debug\netcoreapp3.0\'
