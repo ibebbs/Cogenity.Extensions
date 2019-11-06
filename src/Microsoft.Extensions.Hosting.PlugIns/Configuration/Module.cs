@@ -3,7 +3,7 @@
     public class Module
     {
         /// <summary>
-        /// The unique name of this plug in instance
+        /// The unique name of this module instance
         /// </summary>
         /// <remarks>
         /// Multiple plugins using the same assembly can
@@ -12,7 +12,7 @@
         public string Name { get; set; }
 
         /// <summary>
-        /// The assembly containing one of more plugins to load
+        /// The assembly containing one of more modules to load
         /// </summary>
         /// <remarks>
         /// Must not include a file extension (i.e. dll)
@@ -25,8 +25,7 @@
         public string ConfigurationSection { get; set; }
 
         /// <summary>
-        /// True if errors loading this plugin should
-        /// be ignored
+        /// True if errors loading this plugin should be ignored
         /// </summary>
         public bool Optional { get; set; }
     }

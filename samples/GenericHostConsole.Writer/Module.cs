@@ -6,7 +6,7 @@ namespace GenericHostConsole.Writer
 {
     public class Module : IModule
     {
-        public void Configure(IHostBuilder hostbuilder, string configurationSection = null)
+        public void Configure(IHostBuilder hostbuilder, string configurationSection)
         {
             hostbuilder.ConfigureServices(
                 (hostBuilderContext, serviceCollection) =>

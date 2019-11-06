@@ -15,6 +15,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericHostConsole", "..\sa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericHostConsole.Writer", "..\samples\GenericHostConsole.Writer\GenericHostConsole.Writer.csproj", "{33F76032-ACF5-472F-92BC-49DE264C67CB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{06A81EEE-42DB-4528-B192-6C4D4B9D4554}"
+	ProjectSection(SolutionItems) = preProject
+		..\build\azure-pipelines.yml = ..\build\azure-pipelines.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{ECA5C06C-07EB-42F7-A4C6-6FCDA50E1A0C}"
+	ProjectSection(SolutionItems) = preProject
+		..\ReadMe.md = ..\ReadMe.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
