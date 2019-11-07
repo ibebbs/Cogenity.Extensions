@@ -22,25 +22,10 @@ steps:
     Action: '##vso[build.updatebuildnumber]'
     BuildVersion: $(GitVersion.NuGetVersionV2)
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet restore'
-  inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
-
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build $(buildConfiguration)'
-  inputs:
-    command: 'build'
-    projects: '**/*.csproj'
-    arguments: '--configuration $(buildConfiguration) /p:Version=$(GitVersion.NuGetVersionV2)'
-
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet pack $(buildConfiguration)'
-  inputs:
-    command: 'pack'
-    projects: '**/*.csproj'
-    arguments: '--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)'
+    
+- script: dotnet restore src/
+- script: dotnet build src/ --configuration $(buildConfiguration) /p:Version='$(GitVersion.NuGetVersionV2)'
+- script: dotnet pack src/ --no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   inputs:
