@@ -25,7 +25,7 @@ steps:
     
 - script: dotnet restore src/
 - script: dotnet build src/ --configuration $(buildConfiguration) /p:Version='$(GitVersion.NuGetVersionV2)'
-- script: dotnet pack src/ --no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)'
+- script: dotnet pack src/ --no-build --configuration $(buildConfiguration) -o '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   inputs:
