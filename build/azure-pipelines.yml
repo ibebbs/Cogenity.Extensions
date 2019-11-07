@@ -22,10 +22,13 @@ steps:
     Action: '##vso[build.updatebuildnumber]'
     BuildVersion: $(GitVersion.NuGetVersionV2)
 
-    
-- script: dotnet restore src/
-- script: dotnet build src/ --configuration $(buildConfiguration) /p:Version='$(GitVersion.NuGetVersionV2)'
-- script: dotnet pack src/ --no-build --configuration $(buildConfiguration) -o '$(Build.ArtifactStagingDirectory)'
+- script: dotnet restore src/Microsoft.Extensions.Hosting.Composition.Abstractions/Microsoft.Extensions.Hosting.Composition.Abstractions.csproj
+- script: dotnet build src/Microsoft.Extensions.Hosting.Composition.Abstractions/Microsoft.Extensions.Hosting.Composition.Abstractions.csproj --configuration $(buildConfiguration) /p:Version='$(GitVersion.NuGetVersionV2)'
+- script: dotnet pack src/Microsoft.Extensions.Hosting.Composition.Abstractions/Microsoft.Extensions.Hosting.Composition.Abstractions.csproj --no-build --configuration $(buildConfiguration) -o '$(Build.ArtifactStagingDirectory)'
+
+- script: dotnet restore src/Microsoft.Extensions.Hosting.Composition/Microsoft.Extensions.Hosting.Composition.csproj
+- script: dotnet build src/Microsoft.Extensions.Hosting.Composition/Microsoft.Extensions.Hosting.Composition.csproj --configuration $(buildConfiguration) /p:Version='$(GitVersion.NuGetVersionV2)'
+- script: dotnet pack src/Microsoft.Extensions.Hosting.Composition/Microsoft.Extensions.Hosting.Composition.csproj --no-build --configuration $(buildConfiguration) -o '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   inputs:

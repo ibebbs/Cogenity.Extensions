@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -7,7 +7,6 @@
     <PackageProjectUrl>https://github.com/ibebbs/Microsoft.Extensions.Hosting.Composition</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ibebbs/Microsoft.Extensions.Hosting.Composition</RepositoryUrl>
     <PackageTags>generic-host extensions dotnet dotnet-core3 composition runtime-composition</PackageTags>
-    <Version>1.1.1</Version>
     <RootNamespace>Microsoft.Extensions.Hosting.Composition</RootNamespace>
   </PropertyGroup>
 
