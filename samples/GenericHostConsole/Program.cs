@@ -14,7 +14,6 @@ namespace GenericHostConsole
                 .UseComposition(config => config.AddYamlFile(args[0]));
 
             await builder
-                .UseConsoleLifetime()
                 .Build()
                 .RunAsync();
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -46,6 +47,8 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
             {
                 if (module.Optional)
                 {
+                    Console.WriteLine($"Warning: The module named '{module.Name}' could not be loaded as the assembly '{module.Assembly}' could not be found");
+
                     return Enumerable.Empty<IModule>();
                 }
                 else

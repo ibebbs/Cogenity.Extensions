@@ -22,20 +22,18 @@ NOTE: This library does not intend to be a generic, zero-knowledge plugin system
 
 ## Usage
 
-Usage is very straight-forward and can be accomplished in a few steps:
+Usage is very straight-forward and can be accomplished in a few steps. Here are the steps I used to implement the [GenericHostConsole](https://github.com/ibebbs/Microsoft.Extensions.Hosting.PlugIns/tree/master/samples) sample:
 
 ### Step 1 - UseComposition
 
-In your generic host project, add a reference to `Microsoft.Extensions.Hosting.Composition` and add the line `.UseComposition()` as shown below:
+In the GenericHostConsole project, add a reference to `Microsoft.Extensions.Hosting.Composition` and add the line `.UseComposition()` as shown below:
 
 ```c#
 private static async Task Main(string[] args)
 {
     var builder = Host.CreateDefaultBuilder(args)
         .ConfigureHostConfiguration(configurationBuilder => configurationBuilder.AddCommandLine(args))
-        .UseConsoleLifetime()
-        .UseComposition(config => config.AddYamlFile(args[0])) // <- add this line
-        .ConfigureLogging((hostingContext, logging) => logging.AddConsole());
+        .UseComposition(config => config.AddYamlFile(args[0])); // <- Add this line
 
     await builder
         .Build()
@@ -47,29 +45,80 @@ As you can see, the `.UseComposition()` function requires configuration informat
 
 ### Step 2 - Implement IModule
 
-For any assembly you'd like to compose into your Generic Framework host, add a reference to `Microsoft.Extensions.Hosting.Composition.Abstractions` and add a new class that implements `IModule` as shown below:
+For any assembly you'd like to compose into your Generic Framework host, add a reference to `Microsoft.Extensions.Hosting.Composition.Abstractions` and add a new class that implements `IModule`. Within the `Configure` method of the interface, compose your services as you would from a normal generic host. Here we're registering configuration, services and logging within the [GenericHostConsole.Writer](https://github.com/ibebbs/Microsoft.Extensions.Hosting.PlugIns/tree/master/samples/GenericHostConsole.Writer) sample:
 
 ```c#
 public class Module : IModule
 {
-    public void Configure(IHostBuilder hostbuilder, string configurationSection)
+    public IHostBuilder Configure(IHostBuilder hostbuilder, string configurationSection)
     {
-        hostbuilder.ConfigureServices(
-            (hostBuilderContext, serviceCollection) =>
-            {
-                serviceCollection.AddOptions<Configuration>().Bind(hostBuilderContext.Configuration.GetSection(configurationSection));
-                serviceCollection.AddSingleton<IHostedService, Service>();
-            }
-        );
+        return hostbuilder
+            .ConfigureServices(
+                (hostBuilderContext, serviceCollection) =>
+                {
+                    serviceCollection.AddOptions<Configuration>().Bind(hostBuilderContext.Configuration.GetSection(configurationSection));
+                    serviceCollection.AddSingleton<IHostedService, Service>();
+                })
+            .ConfigureLogging((hostingContext, logging) => logging.AddConsole());
     }
 }
 ```
 
-As you can see, when this module is loaded, it will register a `IHostedService` with the Generic Host such that, when the host is started, the `IHostedService` is started too.
-
 ### Step 3 - Configuration
 
+Back in the GenericHostConsole project, we need to supply configuration information to the `.UseComposition()` call. I like using yaml for this kind of configuration so I first install the [NetEscapades.Configuration.Yaml](https://www.nuget.org/packages/NetEscapades.Configuration.Yaml/) package then add a new yaml file to the project named 'config.yml' (remembering to set it's `Copy To Output Directory` setting to `Copy If Newer`).
 
-### Step 4 - Profit!
+Then I populate the config.yaml file with the following:
 
+```yaml
+composition:
+  modules:
+    - name: ConsoleWriter
+      assembly: GenericHostConsole.Writer
+      configurationSection: consolewriterConfiguration
+      optional: true
+
+consolewriterConfiguration:
+  writeIntervalInSeconds: 2
+```
+
+When loaded, this configuration will do the following:
+
+1. Instruct the module loader to load the `GenericHostConsole.Writer` assembly. If no path is supplied, it looks in the directory containing the currently executing loading assembly.
+2. Give the loaded module a distinct name which allows multiple modules of the same type to be loaded concurrently.
+3. Pass the specified `configurationSection` to the module from which to load it's configuration
+4. State that loading this module is optional - no exception will be thrown if the module could not be located.
+
+### Step 4 - Run
+
+If you run the GenericHostConsole app now.... you'll see the following:
+
+```
+Warning: The module named 'ConsoleWriter' could not be loaded as the assembly 'GenericHostConsole.Writer' could not be found
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\Source\Repositories\Microsoft.Extensions.Hosting.PlugIns\samples\GenericHostConsole\bin\Debug\netcoreapp3.0
+```
+
+Yup, it starts with a warning that it couldn't locate a named module then does nothing. Now, if you copy the build artifacts from `GenericHostConsole.Writer` (`.\samples\GenericHostConsole.Writer\bin\debug\netstandard2.0`) to the build directory for `GenericHostConsole` (`.\samples\GenericHostConsole\bin\Debug\netcoreapp3.0`) then re-run the GenericHostConsole app you should now see the following:
+
+```
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\Source\Repositories\Microsoft.Extensions.Hosting.PlugIns\samples\GenericHostConsole\bin\Debug\netcoreapp3.0
+info: GenericHostConsole.Writer.Service[0]
+      Here!
+info: GenericHostConsole.Writer.Service[0]
+      Here!
+```
+
+Yup, no warning and the the text `Here!` written to the console every two seconds. This is the GenericHostConsole.Writer.Service following it's configuration and logging settings.
+
+Done, you've composed functionality into your generic host!
 
