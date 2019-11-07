@@ -16,9 +16,13 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    contents: '$(Build.Repository.LocalPath)/**/*.nupkg;!$(Build.Repository.LocalPath)/**/*.symbols.nupkg'
+    contents: '$(Build.Repository.LocalPath)/**/*.nupkg'
+    targetFolder: '$(Build.ArtifactStagingDirectory)'    
+- task: CopyFiles@2
+  inputs:
+    contents: '$(Build.Repository.LocalPath)/**/*.symbols.nupkg'
     targetFolder: '$(Build.ArtifactStagingDirectory)'
-
+    
 - task: NuGetCommand@2
   inputs:
     command: push
