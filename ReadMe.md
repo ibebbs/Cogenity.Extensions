@@ -22,7 +22,7 @@ NOTE: This library does not intend to be a generic, zero-knowledge plugin system
 
 ## Usage
 
-Usage is very straight-forward and can be accomplished in a few steps. Here are the steps I used to implement the [GenericHostConsole](https://github.com/ibebbs/Microsoft.Extensions.Hosting.PlugIns/tree/master/samples) sample:
+Usage is very straight-forward and can be accomplished in a few steps. Here are the steps I used to implement the [GenericHostConsole](https://github.com/ibebbs/Microsoft.Extensions.Hosting.Composition/tree/master/samples) sample:
 
 ### Step 1 - UseComposition
 

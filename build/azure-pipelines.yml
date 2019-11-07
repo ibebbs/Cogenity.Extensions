@@ -13,11 +13,17 @@ variables:
 steps:
 - script: dotnet restore src/
 - script: dotnet build src/
+
+- task: CopyFiles@2
+  inputs:
+    contents: '$(Build.Repository.LocalPath)/**/*.nupkg;!$(Build.Repository.LocalPath)/**/*.symbols.nupkg'
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+
 - task: NuGetCommand@2
   inputs:
     command: push
     nuGetFeedType: external
-    packagesToPush: '$(Build.Repository.LocalPath)/**/*.nupkg;!$(Build.Repository.LocalPath)/**/*.symbols.nupkg'
+    #packagesToPush: '$(Build.Repository.LocalPath)/**/*.nupkg;!$(Build.Repository.LocalPath)/**/*.symbols.nupkg'
     publishFeedCredentials: 'MyGet Bebbs Feed'
     verbosityPush: detailed
 
