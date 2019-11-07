@@ -1,5 +1,6 @@
 trigger:
 - master
+- develop
 
 pool:
   vmImage: 'ubuntu-16.04'
@@ -13,6 +14,7 @@ steps:
   displayName: 'GitVersion'
   inputs:
     updateAssemblyInfo: true
+    writeVersionInfoToBuildLog: true
 
 - script: echo %Action%%BuildVersion%
   displayName: 'Set build version'
