@@ -12,11 +12,11 @@ The .NET Generic Host provides scaffolding for implementing software that runs a
 
 Furthermore, by encapsulating/decorating your software as an `IHostedService`, the Generic Host provides graceful startup and shutdown in accordance with the lifetime underwhich it is currently running (i.e. console application, windows service, web host, etc).
 
-In short, it's great! Since it's introduction in .NET Core 2.1, has quickly become the go-to pattern for implementing long-running services in .NET Core.
+In short, it's great! Since it's introduction in .NET Core 2.1, the Generic Host has quickly become the go-to pattern for implementing long-running services in .NET Core.
 
 Unfortunately, the Generic Host doesn't provide any means of composing services from non-referenced assemblies at runtime. While [libraries for accomplishing runtime composition are available](https://www.nuget.org/packages/System.Composition.Runtime/), they tend to be quite heavy weight and there is little to no guidance on how to integrate these libraries in a way that works reliably with the Generic Host.
 
-This library aims to address that issue by providing a simple mechanisms to quickly and reliably load and register services from non-referenced assemblies into the Generic Host.
+This library aims to address this issue by providing a simple mechanisms to quickly and reliably load and register services from non-referenced assemblies into the Generic Host.
 
 NOTE: This library does not intend to be a generic, zero-knowledge plugin system. Microsoft.Extensions.Hosting.Composition uses configuration to specify and configure modules providing increased reliability and flexibility while decreasing start-up times compared to the directory / assembly scanning approaches typically used by plug-in systems. If you feel you require a plug-in system, you can find a good example of one [here](https://github.com/dapplo/Dapplo.Microsoft.Extensions.Hosting).
 
@@ -33,11 +33,11 @@ private static async Task Main(string[] args)
 {
     var builder = Host.CreateDefaultBuilder(args)
         .ConfigureHostConfiguration(configurationBuilder => configurationBuilder.AddCommandLine(args))
-        .UseComposition(config => config.AddYamlFile(args[0])) # <- add this line
+        .UseConsoleLifetime()
+        .UseComposition(config => config.AddYamlFile(args[0])) // <- add this line
         .ConfigureLogging((hostingContext, logging) => logging.AddConsole());
 
     await builder
-        .UseConsoleLifetime()
         .Build()
         .RunAsync();
 }

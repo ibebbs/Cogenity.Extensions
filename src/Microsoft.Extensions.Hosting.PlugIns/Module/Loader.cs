@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -17,44 +17,50 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
             _configuration = configuration;
         }
 
-        public void Load(IHostBuilder hostbuilder)
+        private string GetModulePath(Configuration.Module module)
         {
-            foreach (Configuration.Module configuredModule in _configuration.Modules)
+            var fileName = Path.GetFileName(module.Assembly);
+            var path = Path.GetDirectoryName(module.Assembly);
+
+            path = string.IsNullOrWhiteSpace(path) ? HostDirectory : path;
+
+            return Path.Combine(path, fileName);
+        }
+
+        private IEnumerable<IModule> LoadModules(Configuration.Module module, string assemblyPath)
+        {
+            try
             {
-                var fileName = Path.GetFileName(configuredModule.Assembly);
-                var path = Path.GetDirectoryName(configuredModule.Assembly);
-                
-                path = string.IsNullOrWhiteSpace(path) ? HostDirectory : path;
+                var loadContext = new LoadContext($"{assemblyPath}.dll", module.Name);
 
-                var assemblyPath = Path.Combine(path, fileName);
+                var assembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileName(module.Assembly)));
 
-                try
+                return assembly
+                    .GetTypes()
+                    .Where(type => typeof(IModule).IsAssignableFrom(type))
+                    .Select(Activator.CreateInstance)
+                    .Cast<IModule>()
+                    .ToArray();
+            }
+            catch (Exception exception)
+            {
+                if (module.Optional)
                 {
-                    var loadContext = new LoadContext($"{assemblyPath}.dll", configuredModule.Name);
-
-                    var assembly = loadContext.LoadFromAssemblyName(new AssemblyName(fileName));
-
-                    var modules = assembly
-                        .GetTypes()
-                        .Where(type => typeof(IModule).IsAssignableFrom(type))
-                        .Select(Activator.CreateInstance)
-                        .Cast<IModule>()
-                        .ToArray();
-
-                    foreach (var module in modules)
-                    {
-                        module.Configure(hostbuilder, configuredModule.ConfigurationSection);
-                    }
-
+                    return Enumerable.Empty<IModule>();
                 }
-                catch (Exception exception)
+                else
                 {
-                    if (!configuredModule.Optional)
-                    {
-                        throw new NotFoundException(configuredModule.Name, assemblyPath, exception);
-                    }
+                    throw new NotFoundException(module.Name, assemblyPath, exception);
                 }
             }
+        }
+
+        public IHostBuilder Load(IHostBuilder hostbuilder)
+        {
+            return _configuration.Modules
+                .Select(module => (Module: module, Path: GetModulePath(module)))
+                .SelectMany(tuple => LoadModules(tuple.Module, tuple.Path).Select(module => (Module: module, tuple.Module.ConfigurationSection)))
+                .Aggregate(hostbuilder, (hb, tuple) => tuple.Module.Configure(hb, tuple.ConfigurationSection));
         }
     }
 }

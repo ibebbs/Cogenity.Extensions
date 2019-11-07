@@ -12,6 +12,6 @@
         /// <param name="configurationSection">
         /// The configuration section, if any, to use
         /// </param>
-        void Configure(IHostBuilder hostbuilder, string configurationSection);
+        IHostBuilder Configure(IHostBuilder hostbuilder, string configurationSection);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.Composition;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace GenericHostConsole
@@ -12,8 +11,7 @@ namespace GenericHostConsole
         {
             var builder = Host.CreateDefaultBuilder(args)
                 .ConfigureHostConfiguration(configurationBuilder => configurationBuilder.AddCommandLine(args))
-                .UseComposition(config => config.AddYamlFile(args[0]))
-                .ConfigureLogging((hostingContext, logging) => logging.AddConsole());
+                .UseComposition(config => config.AddYamlFile(args[0]));
 
             await builder
                 .UseConsoleLifetime()

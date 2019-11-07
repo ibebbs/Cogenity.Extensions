@@ -40,9 +40,7 @@ namespace Microsoft.Extensions.Hosting.Composition
                 .Bind<Configuration.Instance>();
 
             // ... and use it to load all the configured modules
-            new Module.Loader(configuration).Load(hostBuilder);
-
-            return hostBuilder;
+            return new Module.Loader(configuration).Load(hostBuilder);
         }
     }
 }
