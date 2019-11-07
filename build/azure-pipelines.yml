@@ -20,15 +20,21 @@ steps:
   displayName: 'Set build version'
   env:
     Action: '##vso[build.updatebuildnumber]'
-    BuildVersion: $(GitVersion.NuGetVersionV2)
+    BuildVersion: $(GitVersion.SemVer)
 
 - script: dotnet restore src/Microsoft.Extensions.Hosting.Composition.Abstractions/Microsoft.Extensions.Hosting.Composition.Abstractions.csproj
-- script: dotnet build src/Microsoft.Extensions.Hosting.Composition.Abstractions/Microsoft.Extensions.Hosting.Composition.Abstractions.csproj --configuration $(buildConfiguration) /p:Version='$(GitVersion.NuGetVersionV2)'
-- script: dotnet pack src/Microsoft.Extensions.Hosting.Composition.Abstractions/Microsoft.Extensions.Hosting.Composition.Abstractions.csproj --no-build --configuration $(buildConfiguration) -o '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Restore Microsoft.Extensions.Hosting.Composition.Abstractions.csproj'
+- script: dotnet build src/Microsoft.Extensions.Hosting.Composition.Abstractions/Microsoft.Extensions.Hosting.Composition.Abstractions.csproj --configuration $(buildConfiguration) /p:Version='$(GitVersion.SemVer)'
+  displayName: 'Build Microsoft.Extensions.Hosting.Composition.Abstractions.csproj'
+- script: dotnet pack src/Microsoft.Extensions.Hosting.Composition.Abstractions/Microsoft.Extensions.Hosting.Composition.Abstractions.csproj --configuration $(buildConfiguration) -o '$(Build.ArtifactStagingDirectory)' /p:Version='$(GitVersion.NuGetVersionV2)'
+  displayName: 'Pack Microsoft.Extensions.Hosting.Composition.Abstractions.csproj'
 
 - script: dotnet restore src/Microsoft.Extensions.Hosting.Composition/Microsoft.Extensions.Hosting.Composition.csproj
-- script: dotnet build src/Microsoft.Extensions.Hosting.Composition/Microsoft.Extensions.Hosting.Composition.csproj --configuration $(buildConfiguration) /p:Version='$(GitVersion.NuGetVersionV2)'
-- script: dotnet pack src/Microsoft.Extensions.Hosting.Composition/Microsoft.Extensions.Hosting.Composition.csproj --no-build --configuration $(buildConfiguration) -o '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Restore Microsoft.Extensions.Hosting.Composition.csproj'
+- script: dotnet build src/Microsoft.Extensions.Hosting.Composition/Microsoft.Extensions.Hosting.Composition.csproj --configuration $(buildConfiguration) /p:Version='$(GitVersion.SemVer)'
+  displayName: 'Build Microsoft.Extensions.Hosting.Composition.csproj'
+- script: dotnet pack src/Microsoft.Extensions.Hosting.Composition/Microsoft.Extensions.Hosting.Composition.csproj --configuration $(buildConfiguration) -o '$(Build.ArtifactStagingDirectory)' /p:Version='$(GitVersion.NuGetVersionV2)'
+  displayName: 'Pack Microsoft.Extensions.Hosting.Composition.csproj'
 
 - task: PublishBuildArtifacts@1
   inputs:
