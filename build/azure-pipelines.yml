@@ -11,12 +11,10 @@ variables:
   version: 1.0.0
 
 steps:
-
-- task: GitVersion@4
+- task: GitVersion@5
   displayName: 'GitVersion'
   inputs:
     updateAssemblyInfo: true
-    preferBundledVersion: false
 
 - script: echo %Action%%BuildVersion%
   displayName: 'Set build version'
