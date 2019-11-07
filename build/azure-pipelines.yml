@@ -22,7 +22,7 @@ steps:
   displayName: 'Set build version'
   env:
     Action: '##vso[build.updatebuildnumber]'
-    BuildVersion: $(GitVersion.SemVer)
+    BuildVersion: $(GitVersion.NuGetVersionV2)
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet restore'
