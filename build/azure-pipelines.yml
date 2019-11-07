@@ -33,7 +33,7 @@ steps:
   inputs:
     command: 'build'
     projects: '**/*.csproj'
-    arguments: '--configuration $(buildConfiguration) /p:Version=$(GitVersion.NuGetVersion)'
+    arguments: '--configuration $(buildConfiguration) /p:Version=$(GitVersion.NuGetVersionV2)'
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack $(buildConfiguration)'
