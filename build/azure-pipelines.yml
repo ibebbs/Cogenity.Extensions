@@ -22,6 +22,11 @@ steps:
   inputs:
     contents: '$(Build.Repository.LocalPath)/**/*.symbols.nupkg'
     targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+-task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)
+    artifactName: MyBuildOutputs
     
 - task: NuGetCommand@2
   inputs:
