@@ -14,7 +14,7 @@ Furthermore, by encapsulating/decorating your software as an `IHostedService`, t
 
 In short, it's great! Since it's introduction in .NET Core 2.1, the Generic Host has quickly become the go-to pattern for implementing long-running services in .NET Core.
 
-Unfortunately, the Generic Host doesn't provide any means of composing services from non-referenced assemblies at runtime. While [libraries for accomplishing runtime composition are available](https://www.nuget.org/packages/System.Composition.Runtime/), they tend to be quite heavy weight and there is little to no guidance on how to integrate these libraries in a way that works reliably with the Generic Host.
+Unfortunately, the Generic Host doesn't provide any means of composing services from non-referenced assemblies at runtime. While [libraries for accomplishing runtime composition are available](https://www.nuget.org/packages/System.Composition.Runtime/), they tend to be quite complex and there is little to no guidance on how to integrate these libraries in a way that works reliably with the Generic Host.
 
 This library aims to address this issue by providing a simple mechanisms to quickly and reliably load and register services from non-referenced assemblies into the Generic Host.
 
