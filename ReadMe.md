@@ -1,6 +1,6 @@
 ﻿# Microsoft.Extensions.Hosting.Composition
 
-A library providing runtime composition of services and configuration from disparate assemblies into the [.NET Generic Host](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-3.0).
+A library for .NET Core 3.0 providing runtime composition of services and configuration from disparate assemblies into the [.NET Generic Host](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-3.0).
 
 ## Background
 
@@ -122,3 +122,6 @@ Yup, no warning and the the text `Here!` written to the console every two second
 
 Done, you've composed functionality into your generic host!
 
+## Contributing
+
+Any suggestions/contributions of enhancements/bug fixes gratefully received.
