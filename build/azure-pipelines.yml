@@ -12,7 +12,6 @@ steps:
 - task: GitVersion@5
   displayName: 'GitVersion'
   inputs:
-    mode: ContinuousDeployment
     updateAssemblyInfo: true
 
 - script: echo %Action%%BuildVersion%
