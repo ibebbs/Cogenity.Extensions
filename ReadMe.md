@@ -1,4 +1,4 @@
-﻿# Microsoft.Extensions.Hosting.Composition
+﻿# Cogenity.Extensions.Hosting.Composition
 
 Light-weight, runtime-composition for the .NET Core 3.0 [Generic Host](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-3.0).
 
