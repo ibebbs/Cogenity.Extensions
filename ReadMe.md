@@ -1,32 +1,32 @@
 ﻿# Microsoft.Extensions.Hosting.Composition
 
-A library for .NET Core 3.0 providing runtime composition of services and configuration from disparate assemblies into the [.NET Generic Host](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-3.0).
+Light-weight, runtime-composition for the .NET Core 3.0 [Generic Host](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-3.0).
 
 ## Background
 
-The .NET Generic Host provides scaffolding for implementing software that runs acrosss a variety of environments and platforms. It provides common resources - and patterns to supplement these resources - such as:
+The .NET Generic Host provides scaffolding for implementing software that runs across a variety of environments and platforms. It provides common resources - and patterns to supplement these resources - such as:
 
   * Dependency injection (DI)
   * Logging
   * Configuration
 
-Furthermore, by encapsulating/decorating your software as an `IHostedService`, the Generic Host provides graceful startup and shutdown in accordance with the lifetime underwhich it is currently running (i.e. console application, windows service, web host, etc).
+Furthermore, by encapsulating/decorating your software as an `IHostedService`, the Generic Host provides graceful start-up and shutdown in accordance with the lifetime under which it is currently running (i.e. console application, windows service, web host, etc).
 
 In short, it's great! Since it's introduction in .NET Core 2.1, the Generic Host has quickly become the go-to pattern for implementing long-running services in .NET Core.
 
-Unfortunately, the Generic Host doesn't provide any means of composing services from non-referenced assemblies at runtime. While [libraries for accomplishing runtime composition are available](https://www.nuget.org/packages/System.Composition.Runtime/), they tend to be quite complex and there is little to no guidance on how to integrate these libraries in a way that works reliably with the Generic Host.
+Unfortunately, the Generic Host doesn't provide any means of composing services from non-referenced assemblies at runtime. While the [WebHost](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.webhost?view=aspnetcore-3.0) has support for [IHostingStartup](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/platform-specific-configuration?view=aspnetcore-3.0) and other libraries for accomplishing [runtime composition](https://www.nuget.org/packages/System.Composition.Runtime/) are available, they tend to be quite complex and/or there is little to no guidance on how to integrate these libraries in a way that works reliably with the Generic Host.
 
-This library aims to address this issue by providing a simple mechanisms to quickly and reliably load and register services from non-referenced assemblies into the Generic Host.
+This library aims to address these issue by providing a light-weight means to quickly and reliably load and register services from non-referenced assemblies into the Generic Host.
 
 NOTE: This library does not intend to be a generic, zero-knowledge plugin system. Microsoft.Extensions.Hosting.Composition uses configuration to specify and configure modules providing increased reliability and flexibility while decreasing start-up times compared to the directory / assembly scanning approaches typically used by plug-in systems. If you feel you require a plug-in system, you can find a good example of one [here](https://github.com/dapplo/Dapplo.Microsoft.Extensions.Hosting).
 
 ## Usage
 
-Usage is very straight-forward and can be accomplished in a few steps. Here are the steps I used to implement the [GenericHostConsole](https://github.com/ibebbs/Microsoft.Extensions.Hosting.Composition/tree/master/samples) sample:
+Usage is very straight-forward and can be accomplished in a few steps. Here are the steps I used to implement the [GenericHostConsole](https://github.com/ibebbs/Cogenity.Extensions.Hosting.Composition/tree/master/samples) sample:
 
 ### Step 1 - UseComposition
 
-In the GenericHostConsole project, add a reference to `Microsoft.Extensions.Hosting.Composition` and add the line `.UseComposition()` as shown below:
+In the GenericHostConsole project, add a reference to `Cogenity.Extensions.Hosting.Composition` and add the line `.UseComposition()` as shown below:
 
 ```c#
 private static async Task Main(string[] args)
@@ -45,7 +45,7 @@ As you can see, the `.UseComposition()` function requires configuration informat
 
 ### Step 2 - Implement IModule
 
-For any assembly you'd like to compose into your Generic Framework host, add a reference to `Microsoft.Extensions.Hosting.Composition.Abstractions` and add a new class that implements `IModule`. Within the `Configure` method of the interface, compose your services as you would from a normal generic host. Here we're registering configuration, services and logging within the [GenericHostConsole.Writer](https://github.com/ibebbs/Microsoft.Extensions.Hosting.PlugIns/tree/master/samples/GenericHostConsole.Writer) sample:
+For any assembly you'd like to compose into your Generic Framework host, add a reference to `Cogenity.Extensions.Hosting.Composition.Abstractions` and add a new class that implements `IModule`. Within the `Configure` method of the interface, compose your services as you would from a normal generic host. Here we're registering configuration, services and logging within the [GenericHostConsole.Writer](https://github.com/ibebbs/Cogenity.Extensions.Hosting.PlugIns/tree/master/samples/GenericHostConsole.Writer) sample:
 
 ```c#
 public class Module : IModule

@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Microsoft.Extensions.Hosting.Composition.Abstractions\Microsoft.Extensions.Hosting.Composition.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\Cogenity.Extensions.Hosting.Composition.Abstractions\Cogenity.Extensions.Hosting.Composition.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
