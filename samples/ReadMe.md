@@ -7,7 +7,7 @@ The following sections describes the process of how the samples were implemented
 1. Start a new Console App (`.netcore3.0`) and ensure you're targeting .NET Core 3.0
 2. Add the following packages:
     * [Microsoft.Extensions.Hosting](https://www.nuget.org/packages/Microsoft.Extensions.Hosting)
-    * [Microsoft.Extensions.Hosting.Compsition](https://www.nuget.org/packages/Microsoft.Extensions.Hosting.Composition)
+    * [Cogenity.Extensions.Hosting.Compsition](https://www.nuget.org/packages/Cogenity.Extensions.Hosting.Composition)
     * [NetEscapades.Configuration.Yaml](https://www.nuget.org/packages/NetEscapades.Configuration.Yaml)
 3. Add the following to the `Main` method:
 
@@ -41,7 +41,7 @@ consolewriterConfiguration:
 
 1. Start a new Library project (`.netstandard 2.0') and add references to the following packages:
     * [Microsoft.Extensions.Hosting](https://www.nuget.org/packages/Microsoft.Extensions.Hosting)
-    * [Microsoft.Extensions.Hosting.Compsition.Abstractions](https://www.nuget.org/packages/Microsoft.Extensions.Hosting.Composition.Abstractions)
+    * [Cogenity.Extensions.Hosting.Compsition.Abstractions](https://www.nuget.org/packages/Cogenity.Extensions.Hosting.Composition.Abstractions)
     * [Microsoft.Extensions.Logging.Console](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Console)
     * [Microsoft.Extensions.Options.ConfigurationExtensions](https://www.nuget.org/packages/Microsoft.Extensions.Options.ConfigurationExtensions)
 2. Rename `Class1.cs` to `Module.cd` (ensuring to rename the class too) and implement the `IModule` interface in this class as follows:
@@ -61,7 +61,7 @@ consolewriterConfiguration:
         }
     }
     ```
-3. Add the Configuration and Service classes which can be found [here](https://github.com/ibebbs/Microsoft.Extensions.Hosting.Composition/blob/master/samples/GenericHostConsole.Writer/Configuration.cs) and [here](https://github.com/ibebbs/Microsoft.Extensions.Hosting.Composition/blob/master/samples/GenericHostConsole.Writer/Service.cs) respectively.
+3. Add the Configuration and Service classes which can be found [here](https://github.com/ibebbs/Cogenity.Extensions.Hosting.Composition/blob/master/samples/GenericHostConsole.Writer/Configuration.cs) and [here](https://github.com/ibebbs/Cogenity.Extensions.Hosting.Composition/blob/master/samples/GenericHostConsole.Writer/Service.cs) respectively.
 
 ## Build and composition
 
@@ -69,6 +69,6 @@ Build both projects then copy the build artifacts from `GenericHostConsole.Write
 
 ## Run!
 
-Run the GenericHostConsole application and you should see the `GenericHostConsole.Writer.Service` write `Here!` to the console every two seconds.
+Run the GenericHostConsole application and you should see the `GenericHostConsole.Writer.Service` write `Here!` to the console every two seconds per it's configuration.
 
 
