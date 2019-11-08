@@ -21,6 +21,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{06A81EEE-42DB-4528-B192-6C4D4B9D4554}"
 	ProjectSection(SolutionItems) = preProject
 		..\build\azure-pipelines.yml = ..\build\azure-pipelines.yml
+		..\build\GitVersion.yml = ..\build\GitVersion.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{ECA5C06C-07EB-42F7-A4C6-6FCDA50E1A0C}"
