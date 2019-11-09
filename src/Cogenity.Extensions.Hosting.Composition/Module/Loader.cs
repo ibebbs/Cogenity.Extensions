@@ -60,7 +60,7 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
 
         public IHostBuilder Load(IHostBuilder hostbuilder)
         {
-            return _configuration.Modules
+            return (_configuration.Modules ?? Enumerable.Empty<Configuration.Module>())
                 .Select(module => (Module: module, Path: GetModulePath(module)))
                 .SelectMany(tuple => LoadModules(tuple.Module, tuple.Path).Select(module => (Module: module, tuple.Module.ConfigurationSection)))
                 .Aggregate(hostbuilder, (hb, tuple) => tuple.Module.Configure(hb, tuple.ConfigurationSection));
