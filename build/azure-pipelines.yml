@@ -43,9 +43,9 @@ steps:
 
 - task: NuGetCommand@2
   inputs:
-    command: Push
-    nuGetFeedType: Internal
-    publishVstsFeed: Packages
+    command: push
+    nuGetFeedType: internal
+    publishVstsFeed: NstrumentPackages
     verbosityPush: Detailed
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
 
