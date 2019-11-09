@@ -6,4 +6,4 @@
       optional: true
 
 consolewriterConfiguration:
-  writeIntervalInSeconds: 2
+  writeIntervalInSeconds: 10

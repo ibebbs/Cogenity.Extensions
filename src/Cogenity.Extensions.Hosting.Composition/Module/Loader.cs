@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,23 +10,28 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
 {
     public class Loader
     {
-        private static readonly string HostDirectory = Path.GetDirectoryName(typeof(HostBuilderExtensions).Assembly.Location);
+        private static readonly string HostDirectory = Path.GetDirectoryName(typeof(ComposableHostBuilderExtensions).Assembly.Location);
 
-        private Configuration.Instance _configuration;
+        private readonly Configuration.Instance _configuration;
+        private readonly ILogger<Loader> _logger;
 
-        public Loader(Configuration.Instance configuration)
+        public Loader(IOptions<Configuration.Instance> configuration, ILogger<Loader> logger)
         {
-            _configuration = configuration;
+            _configuration = configuration.Value;
+            _logger = logger;
         }
 
         private string GetModulePath(Configuration.Module module)
         {
             var fileName = Path.GetFileName(module.Assembly);
-            var path = Path.GetDirectoryName(module.Assembly);
+            var directory = Path.GetDirectoryName(module.Assembly);
+            var path = string.IsNullOrWhiteSpace(directory) ? HostDirectory : directory;
 
-            path = string.IsNullOrWhiteSpace(path) ? HostDirectory : path;
+            var modulePath = Path.Combine(path, fileName);
 
-            return Path.Combine(path, fileName);
+            _logger.LogDebug($"Looking to load module '{module.Name}' from assembly located at '{modulePath}'");
+
+            return modulePath;
         }
 
         private IEnumerable<IModule> LoadModules(Configuration.Module module, string assemblyPath)
