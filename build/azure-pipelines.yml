@@ -41,3 +41,11 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)
     artifactName: MyBuildOutputs
 
+- task: NuGetCommand@2
+  inputs:
+    command: Push
+    nuGetFeedType: Internal
+    publishVstsFeed: Packages
+    verbosityPush: Detailed
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+
