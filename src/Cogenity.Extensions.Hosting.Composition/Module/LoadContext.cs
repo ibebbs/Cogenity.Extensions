@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -7,10 +8,12 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
 {
     internal class LoadContext : AssemblyLoadContext
     {
+        private readonly ILogger<Loader> _logger;
         private readonly AssemblyDependencyResolver _resolver;
 
-        public LoadContext(string pluginPath, string name) : base(name)
+        public LoadContext(string pluginPath, string name, ILogger<Loader> logger) : base(name)
         {
+            _logger = logger;
             _resolver = new AssemblyDependencyResolver(pluginPath);
         }
 
@@ -27,19 +30,32 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
         /// <inheritdoc />
         protected override Assembly Load(AssemblyName assemblyName)
         {
-            // Try to get the assembly from the AssemblyLoadContext.Default, when it is already loaded
-            if (Default.TryGetAssembly(assemblyName, out var alreadyLoadedAssembly))
+            using (_logger.BeginScope($"Attempting to resolve assembly '{assemblyName.FullName}'"))
             {
-                return alreadyLoadedAssembly;
-            }
-            var assemblyPath = ResolveAssemblyPath(assemblyName);
-            if (assemblyPath == null)
-            {
-                return null;
-            }
+                // Try to get the assembly from the AssemblyLoadContext.Default, when it is already loaded
+                if (Default.TryGetAssembly(assemblyName, out var alreadyLoadedAssembly))
+                {
+                    _logger.LogDebug($"Using already loaded assembly '{alreadyLoadedAssembly.FullName}'");
 
-            var resultAssembly = LoadFromAssemblyPath(assemblyPath);
-            return resultAssembly;
+                    return alreadyLoadedAssembly;
+                }
+                else
+                {
+                    var assemblyPath = ResolveAssemblyPath(assemblyName);
+                    if (assemblyPath == null)
+                    {
+                        _logger.LogWarning($"Unable to resolve assembly path for '{assemblyName.FullName}'");
+                        return null;
+                    }
+                    else
+                    {
+                        _logger.LogDebug($"Loading '{assemblyName.FullName}' from '{assemblyPath}'");
+
+                        var resultAssembly = LoadFromAssemblyPath(assemblyPath);
+                        return resultAssembly;
+                    }
+                }
+            }
         }
 
         /// <inheritdoc />

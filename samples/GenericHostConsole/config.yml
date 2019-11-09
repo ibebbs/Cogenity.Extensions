@@ -5,5 +5,10 @@
       configurationSection: consolewriterConfiguration
       optional: true
 
+logging:
+  logLevel:
+    Default: Debug
+    Microsoft: Debug
+
 consolewriterConfiguration:
   writeIntervalInSeconds: 2
