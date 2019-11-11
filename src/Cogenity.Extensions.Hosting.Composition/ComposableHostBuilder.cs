@@ -9,6 +9,7 @@ namespace Microsoft.Extensions.Hosting.Composition
     public class ComposableHostBuilder : IComposableHostBuilder
     {
         private readonly DefaultServiceProviderFactory _compositionServiceProviderFactory = new DefaultServiceProviderFactory();
+        private readonly List<Action<IConfigurationBuilder>> _configureHostConfigActions = new List<Action<IConfigurationBuilder>>();
         private readonly List<Action<HostBuilderContext, IConfigurationBuilder>> _configureAppConfigActions = new List<Action<HostBuilderContext, IConfigurationBuilder>>();
         private readonly List<Action<HostBuilderContext, IServiceCollection>> _configureServicesActions = new List<Action<HostBuilderContext, IServiceCollection>>()
         {
@@ -37,14 +38,29 @@ namespace Microsoft.Extensions.Hosting.Composition
             return _compositionServiceProviderFactory.CreateServiceProvider(serviceContainerBuilder);
         }
 
+        private IConfigurationRoot BuildHostCompositionConfiguration()
+        {
+            var configBuilder = new ConfigurationBuilder()
+                .AddInMemoryCollection(); // Make sure there's some default storage since there are no default providers
+
+            foreach (var buildAction in _configureHostConfigActions)
+            {
+                buildAction(configBuilder);
+            }
+
+            return configBuilder.Build();
+        }
+
         private IConfigurationRoot BuildCompositionConfiguration(HostBuilderContext hostBuilderContext)
         {
-            var configBuilder = new ConfigurationBuilder();
+            var configBuilder = new ConfigurationBuilder()
+                .AddConfiguration(BuildHostCompositionConfiguration(), shouldDisposeConfiguration: true);
 
             foreach (var buildAction in _configureAppConfigActions)
             {
                 buildAction(hostBuilderContext, configBuilder);
             }
+
             return configBuilder.Build();
         }
 
@@ -86,6 +102,7 @@ namespace Microsoft.Extensions.Hosting.Composition
 
         public IHostBuilder ConfigureHostConfiguration(Action<IConfigurationBuilder> configureDelegate)
         {
+            _configureHostConfigActions.Add(configureDelegate ?? throw new ArgumentNullException(nameof(configureDelegate)));
             _hostBuilder = _hostBuilder.ConfigureHostConfiguration(configureDelegate);
 
             return this;
