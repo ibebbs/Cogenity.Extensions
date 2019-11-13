@@ -43,7 +43,6 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
                     return assembly
                         .GetTypes()
                         .Where(type => typeof(IModule).IsAssignableFrom(type))
-                        .Do(type => _logger.LogDebug($"Activating module of type '{type.FullName}' for module '{module.Name}'"))
                         .Select(Activator.CreateInstance)
                         .Cast<IModule>()
                         .ToArray();
