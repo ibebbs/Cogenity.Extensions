@@ -34,7 +34,9 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
         {
             try
             {
-                using (_logger.BeginScope($"Attempting to load '{module.Name}' from '{modulePath}'"))
+                _logger.LogInformation($"Loading '{module.Name}' from '{modulePath}'");
+
+                using (_logger.BeginScope($"Loading '{module.Name}' from '{modulePath}'"))
                 {
                     var loadContext = new LoadContext($"{modulePath}.dll", module.Name, _logger);
 
