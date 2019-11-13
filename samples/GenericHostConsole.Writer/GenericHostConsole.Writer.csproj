@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Cogenity.Extensions.Hosting.Composition.Abstractions\Cogenity.Extensions.Hosting.Composition.Abstractions.csproj" />
+    <ProjectReference Include="..\GenericHostConsole.Common\GenericHostConsole.Common.csproj" />
   </ItemGroup>
 
 </Project>

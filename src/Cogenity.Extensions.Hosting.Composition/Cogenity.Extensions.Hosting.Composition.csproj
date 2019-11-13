@@ -7,6 +7,7 @@
     <PackageProjectUrl>https://github.com/ibebbs/Microsoft.Extensions.Hosting.Composition</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ibebbs/Microsoft.Extensions.Hosting.Composition</RepositoryUrl>
     <PackageTags>generic-host extensions dotnet dotnet-core3 composition runtime-composition</PackageTags>
+    <RootNamespace>Microsoft.Extensions.Hosting.Composition</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,11 +17,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
 
