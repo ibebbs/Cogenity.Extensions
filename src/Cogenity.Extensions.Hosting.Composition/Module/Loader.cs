@@ -15,17 +15,23 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
         private readonly Configuration.Instance _configuration;
         private readonly ILogger<Loader> _logger;
 
+        private readonly string _workingDirectory;
+
         public Loader(IOptions<Configuration.Instance> configuration, ILogger<Loader> logger)
         {
             _configuration = configuration.Value;
             _logger = logger;
+
+            _workingDirectory = string.IsNullOrWhiteSpace(configuration.Value.WorkingDirectory)
+                ? HostDirectory
+                : configuration.Value.WorkingDirectory;
         }
 
         private string GetModulePath(Configuration.Module module)
         {
             var fileName = Path.GetFileName(module.Assembly);
             var directory = Path.GetDirectoryName(module.Assembly);
-            var path = string.IsNullOrWhiteSpace(directory) ? HostDirectory : directory;
+            var path = string.IsNullOrWhiteSpace(directory) ? _workingDirectory : directory;
 
             return Path.Combine(path, fileName);
         }
