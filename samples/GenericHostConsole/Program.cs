@@ -13,12 +13,7 @@ namespace GenericHostConsole
         private static async Task Main(string[] args)
         {
             var builder = ComposableHost.CreateDefaultBuilder(args)
-                .ConfigureHostConfiguration(
-                    config =>
-                    {
-                        config.AddYamlFile(args[0]);
-                        config.AddCommandLine(args);
-                    })
+                .ConfigureHostConfiguration(config => config.AddCommandLine(args).AddYamlFile(args[0]))
                 .ConfigureLogging((hostContext, logging) => logging.AddConsole().SetMinimumLevel(LogLevel.Trace))
                 .UseComposition()
                 .ConfigureServices(
