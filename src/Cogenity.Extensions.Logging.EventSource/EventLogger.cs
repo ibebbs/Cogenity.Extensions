@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Concurrent;
@@ -18,19 +18,23 @@ namespace Cogenity.Extensions.Logging.EventSource
 
         private readonly EventLoggerFilterOptions _options;
         private readonly ILoggerFactory _loggerFactory;
-        
+        private readonly ILogger<EventLogger> _logger;
+
         private int _enabled = Disabled;
 
         public EventLogger(IOptions<EventLoggerFilterOptions> options, ILoggerFactory loggerFactory)
         {
             _options = options.Value;
             _loggerFactory = loggerFactory;
+            _logger = loggerFactory.CreateLogger<EventLogger>();
         }
 
         private void EnableEventSource(System.Diagnostics.Tracing.EventSource eventSource)
         {
             if (_enabled == Enabled)
             {
+                _logger.LogDebug($"Enabling EventSource '{eventSource.Name}'");
+
                 var option = (_options?.Rules ?? Enumerable.Empty<LoggerFilterRule>())
                     .Where(rule => !string.IsNullOrWhiteSpace(rule.CategoryName) && eventSource.Name.StartsWith(rule.CategoryName, StringComparison.OrdinalIgnoreCase))
                     .OrderByDescending(rule => rule.CategoryName.Length)
@@ -38,11 +42,17 @@ namespace Cogenity.Extensions.Logging.EventSource
 
                 if (option != null && (option.LogLevel ?? LogLevel.None) != LogLevel.None)
                 {
+                    _logger.LogInformation($"Enabling logging for EventSource '{eventSource.Name} at level '{option.LogLevel}'");
+
                     var logger = _loggerFactory.CreateLogger(eventSource.Name);
 
                     _loggers.TryAdd(eventSource.Name, logger);
 
                     EnableEvents(eventSource, option.LogLevel.ToEventLevel());
+                }
+                else
+                {
+                    _logger.LogInformation($"No option specified for EventSource '{eventSource.Name}'. No logging will be performed.");
                 }
             }
         }
