@@ -26,14 +26,19 @@ Usage is very straight-forward and can be accomplished in a few steps. Here are 
 
 ### Step 1 - UseComposition
 
-In the GenericHostConsole project, add a reference to `Cogenity.Extensions.Hosting.Composition` and add the line `.UseComposition()` as shown below:
+In the GenericHostConsole project, add a reference to `Cogenity.Extensions.Hosting.Composition` and change the line `Host.CreateDefaultBuilder()` to `ComposableHost.CreateDefaultBuilder()` as shown below:
 
 ```c#
 private static async Task Main(string[] args)
 {
-    var builder = Host.CreateDefaultBuilder(args)
-        .ConfigureHostConfiguration(configurationBuilder => configurationBuilder.AddCommandLine(args))
-        .UseComposition(config => config.AddYamlFile(args[0])); // <- Add this line
+    var builder = ComposableHost.CreateDefaultBuilder(args) // <-- Change 'Host' to 'ComposableHost'
+        .ConfigureHostConfiguration(
+            configurationBuilder => 
+            {
+                configurationBuilder
+                    .AddCommandLine(args)
+                    .AddYamlFile(args[0]) // <-- Add configuration
+            });
 
     await builder
         .Build()
@@ -41,7 +46,7 @@ private static async Task Main(string[] args)
 }
 ```
 
-As you can see, the `.UseComposition()` function requires configuration information but we'll get back to this in step 3.
+As you can see, we pass an additional configuration file into the Host configuration but we'll get back to that in section 3.
 
 ### Step 2 - Implement IModule
 
@@ -66,7 +71,7 @@ public class Module : IModule
 
 ### Step 3 - Configuration
 
-Back in the GenericHostConsole project, we need to supply configuration information to the `.UseComposition()` call. I like using yaml for this kind of configuration so I first install the [NetEscapades.Configuration.Yaml](https://www.nuget.org/packages/NetEscapades.Configuration.Yaml/) package then add a new yaml file to the project named 'config.yml' (remembering to set it's `Copy To Output Directory` setting to `Copy If Newer`).
+Back in the GenericHostConsole project, we need to supply configuration information to ComposableHost call. I like using yaml for this kind of configuration so I first install the [NetEscapades.Configuration.Yaml](https://www.nuget.org/packages/NetEscapades.Configuration.Yaml/) package then add a new yaml file to the project named 'config.yml' (remembering to set it's `Copy To Output Directory` setting to `Copy If Newer`).
 
 Then I populate the config.yaml file with the following:
 
