@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
-
-namespace Microsoft.Extensions.Hosting.Composition
+﻿namespace Microsoft.Extensions.Hosting.Composition
 {
     public static class ComposableHost
     {
@@ -8,9 +6,11 @@ namespace Microsoft.Extensions.Hosting.Composition
         
         public static IHostBuilder CreateDefaultBuilder(string[] args)
         {
-            var hostBuilder = Host.CreateDefaultBuilder(args);
+            var hostBuilder = Host
+                .CreateDefaultBuilder(args);
 
-            return new ComposableHostBuilder(hostBuilder);
+            return new ComposableHostBuilder(hostBuilder)
+                .UseComposition();
         }
     }
 }
