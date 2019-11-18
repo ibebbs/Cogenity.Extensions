@@ -14,19 +14,16 @@ namespace Cogenity.Extensions.Logging.EventSource
         private const int Enabled = 1;
 
         private readonly ConcurrentDictionary<string, ILogger> _loggers = new ConcurrentDictionary<string, ILogger>();
-
         private readonly ConcurrentDictionary<string, System.Diagnostics.Tracing.EventSource> _eventSources = new ConcurrentDictionary<string, System.Diagnostics.Tracing.EventSource>();
 
+        private readonly EventLoggerFilterOptions _options;
         private readonly ILoggerFactory _loggerFactory;
         
-        private EventLoggerFilterOptions _options;
         private int _enabled = Disabled;
 
-        public EventLogger(IOptionsMonitor<EventLoggerFilterOptions> options, ILoggerFactory loggerFactory)
+        public EventLogger(IOptions<EventLoggerFilterOptions> options, ILoggerFactory loggerFactory)
         {
-            _options = options.CurrentValue;
-            options.OnChange((options, name) => _options = options);
-
+            _options = options.Value;
             _loggerFactory = loggerFactory;
         }
 
