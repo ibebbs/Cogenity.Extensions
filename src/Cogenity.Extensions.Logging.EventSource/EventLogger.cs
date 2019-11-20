@@ -52,7 +52,7 @@ namespace Cogenity.Extensions.Logging.EventSource
                 }
                 else
                 {
-                    _logger.LogInformation($"No option specified for EventSource '{eventSource.Name}'. No logging will be performed.");
+                    _logger.LogDebug($"No option specified for EventSource '{eventSource.Name}'. No logging will be performed.");
                 }
             }
         }
@@ -71,11 +71,27 @@ namespace Cogenity.Extensions.Logging.EventSource
             EnableEventSource(eventSource);
         }
 
+        private string Message(EventWrittenEventArgs eventData)
+        {
+            return eventData.Message switch
+            {
+                var message when eventData.ActivityId != default && eventData.RelatedActivityId != default =>
+                    $"[{ActivityPathDecoder.GetActivityPathString(eventData.RelatedActivityId)}]->[{ActivityPathDecoder.GetActivityPathString(eventData.ActivityId)}]->{message}",
+                var message when eventData.ActivityId != default =>
+                    $"[{ActivityPathDecoder.GetActivityPathString(eventData.ActivityId)}]->{message}",
+                var message when eventData.RelatedActivityId != default =>
+                    $"[{ActivityPathDecoder.GetActivityPathString(eventData.RelatedActivityId)}]->{message}",
+                var message => message
+            };
+        }
+
         protected override void OnEventWritten(EventWrittenEventArgs eventData)
         {
             if (_loggers.TryGetValue(eventData.EventSource.Name, out ILogger logger))
             {
-                logger.Log(eventData.Level.ToLogLevel(), eventData.Message, eventData.Payload.ToArray());                
+                var message = _options.CaptureScopes ? Message(eventData) : eventData.Message;
+
+                logger.Log(eventData.Level.ToLogLevel(), eventData.EventId, message, eventData.Payload.ToArray());                
             }
         }
 

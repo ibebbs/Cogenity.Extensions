@@ -13,14 +13,12 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
         private static readonly string HostDirectory = Path.GetDirectoryName(typeof(ComposableHostBuilderExtensions).Assembly.Location);
 
         private readonly Configuration.Instance _configuration;
-        private readonly ILogger<Loader> _logger;
 
         private readonly string _workingDirectory;
 
-        public Loader(IOptions<Configuration.Instance> configuration, ILogger<Loader> logger)
+        public Loader(IOptions<Configuration.Instance> configuration)
         {
             _configuration = configuration.Value;
-            _logger = logger;
 
             _workingDirectory = string.IsNullOrWhiteSpace(configuration.Value.WorkingDirectory)
                 ? HostDirectory
@@ -38,36 +36,36 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
 
         private IEnumerable<IModule> LoadModules(Configuration.Module module, string modulePath)
         {
+            Trace.Event.LoadModuleStart(module.Name, modulePath);
+
             try
             {
-                _logger.LogInformation($"Loading '{module.Name}' from '{modulePath}'");
+                var loadContext = new LoadContext($"{modulePath}.dll", module.Name);
 
-                using (_logger.BeginScope($"Loading '{module.Name}' from '{modulePath}'"))
-                {
-                    var loadContext = new LoadContext($"{modulePath}.dll", module.Name, _logger);
+                var assembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileName(module.Assembly)));
 
-                    var assembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileName(module.Assembly)));
-
-                    return assembly
-                        .GetTypes()
-                        .Where(type => typeof(IModule).IsAssignableFrom(type))
-                        .Select(Activator.CreateInstance)
-                        .Cast<IModule>()
-                        .ToArray();
-                }
+                return assembly
+                    .GetTypes()
+                    .Where(type => typeof(IModule).IsAssignableFrom(type))
+                    .Select(Activator.CreateInstance)
+                    .Cast<IModule>()
+                    .ToArray();
             }
             catch (Exception exception)
             {
                 if (module.Optional)
                 {
-                    _logger.LogWarning($"The module named '{module.Name}' could not be loaded as the assembly '{module.Assembly}' could not be found");
-
+                    Trace.Event.UnableToLocateAssemblyForModule(module.Name, module.Assembly);
                     return Enumerable.Empty<IModule>();
                 }
                 else
                 {
                     throw new NotFoundException(module.Name, modulePath, exception);
                 }
+            }
+            finally
+            {
+                Trace.Event.LoadModuleStop(module.Name, modulePath);
             }
         }
 

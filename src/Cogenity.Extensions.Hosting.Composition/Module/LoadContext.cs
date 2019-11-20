@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -8,12 +7,10 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
 {
     internal class LoadContext : AssemblyLoadContext
     {
-        private readonly ILogger<Loader> _logger;
         private readonly AssemblyDependencyResolver _resolver;
 
-        public LoadContext(string pluginPath, string name, ILogger<Loader> logger) : base(name)
+        public LoadContext(string pluginPath, string name) : base(name)
         {
-            _logger = logger;
             _resolver = new AssemblyDependencyResolver(pluginPath);
         }
 
@@ -30,12 +27,14 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
         /// <inheritdoc />
         protected override Assembly Load(AssemblyName assemblyName)
         {
-            using (_logger.BeginScope($"Attempting to resolve assembly '{assemblyName.FullName}'"))
-            {
+            Trace.Event.AssemblyLoadStart(assemblyName.FullName);
+
+            try
+            { 
                 // Try to get the assembly from the AssemblyLoadContext.Default, when it is already loaded
                 if (Default.TryGetAssembly(assemblyName, out var alreadyLoadedAssembly))
                 {
-                    _logger.LogDebug($"Using already loaded assembly '{alreadyLoadedAssembly.FullName}'");
+                    Trace.Event.UsingDefaultAssembly(alreadyLoadedAssembly.FullName);
 
                     return alreadyLoadedAssembly;
                 }
@@ -44,17 +43,20 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
                     var assemblyPath = ResolveAssemblyPath(assemblyName);
                     if (assemblyPath == null)
                     {
-                        _logger.LogWarning($"Unable to resolve assembly path for '{assemblyName.FullName}'");
+                        Trace.Event.UnableToResolveAssembly(assemblyName.FullName);
                         return null;
                     }
                     else
                     {
-                        _logger.LogDebug($"Loading '{assemblyName.FullName}' from '{assemblyPath}'");
-
+                        Trace.Event.LoadingAssemblyFromPath(assemblyName.FullName, assemblyPath);
                         var resultAssembly = LoadFromAssemblyPath(assemblyPath);
                         return resultAssembly;
                     }
                 }
+            }
+            finally
+            {
+                Trace.Event.AssemblyLoadStop(assemblyName.FullName);
             }
         }
 
@@ -62,12 +64,17 @@ namespace Microsoft.Extensions.Hosting.Composition.Module
         protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
         {
             var libraryPath = _resolver.ResolveUnmanagedDllToPath(unmanagedDllName);
+
             if (libraryPath == null)
             {
+                Trace.Event.UnableToResolveUnmanagedDll(unmanagedDllName);
                 return IntPtr.Zero;
             }
-
-            return LoadUnmanagedDllFromPath(libraryPath);
+            else
+            {
+                Trace.Event.LoadingUnmanagedDllFromPath(unmanagedDllName, libraryPath);
+                return LoadUnmanagedDllFromPath(libraryPath);
+            }
         }
     }
 
