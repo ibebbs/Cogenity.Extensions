@@ -36,9 +36,9 @@ steps:
 - script: dotnet pack src/Cogenity.Extensions.Hosting.Composition/Cogenity.Extensions.Hosting.Composition.csproj --configuration $(buildConfiguration) -o '$(Build.ArtifactStagingDirectory)' /p:Version='$(GitVersion.NuGetVersionV2)'
   displayName: 'Pack Cogenity.Extensions.Hosting.Composition.csproj'
   
-- script: dotnet restore src/Cogenity.Extensions.Logging.EventSource/Cogenity.Extensions.Logging.EventSource.csproj /unsafe
+- script: dotnet restore src/Cogenity.Extensions.Logging.EventSource/Cogenity.Extensions.Logging.EventSource.csproj /p:unsafe
   displayName: 'Restore Cogenity.Extensions.Logging.EventSource.csproj'
-- script: dotnet build src/Cogenity.Extensions.Logging.EventSource/Cogenity.Extensions.Logging.EventSource.csproj --configuration $(buildConfiguration) /unsafe /p:Version='$(GitVersion.SemVer)'
+- script: dotnet build src/Cogenity.Extensions.Logging.EventSource/Cogenity.Extensions.Logging.EventSource.csproj --configuration $(buildConfiguration) /p:unsafe /p:Version='$(GitVersion.SemVer)'
   displayName: 'Build Cogenity.Extensions.Logging.EventSource.csproj'
 - script: dotnet pack src/Cogenity.Extensions.Logging.EventSource/Cogenity.Extensions.Logging.EventSource.csproj --configuration $(buildConfiguration) -o '$(Build.ArtifactStagingDirectory)' /p:Version='$(GitVersion.NuGetVersionV2)'
   displayName: 'Pack Cogenity.Extensions.Logging.EventSource.csproj'
