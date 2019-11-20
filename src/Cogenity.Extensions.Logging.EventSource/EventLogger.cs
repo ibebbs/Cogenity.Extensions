@@ -42,13 +42,15 @@ namespace Cogenity.Extensions.Logging.EventSource
 
                 if (option != null && (option.LogLevel ?? LogLevel.None) != LogLevel.None)
                 {
-                    _logger.LogInformation($"Enabling logging for EventSource '{eventSource.Name} at level '{option.LogLevel}'");
+                    var eventLevel = option.LogLevel.ToEventLevel();
+
+                    _logger.LogInformation($"Enabling logging for EventSource '{eventSource.Name} at level 'eventLevel'");
 
                     var logger = _loggerFactory.CreateLogger(eventSource.Name);
 
                     _loggers.TryAdd(eventSource.Name, logger);
 
-                    EnableEvents(eventSource, option.LogLevel.ToEventLevel());
+                    EnableEvents(eventSource, eventLevel, EventKeywords.All);
                 }
                 else
                 {
