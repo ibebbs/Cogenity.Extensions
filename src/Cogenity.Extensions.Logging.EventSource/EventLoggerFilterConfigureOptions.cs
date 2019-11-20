@@ -28,6 +28,8 @@ namespace Cogenity.Extensions.Logging.EventSource
                 return;
             }
 
+            options.CaptureScopes = _configuration.GetValue(nameof(options.CaptureScopes), options.CaptureScopes);
+
             foreach (var configurationSection in _configuration.GetChildren())
             {
                 if (configurationSection.Key.Equals(LogLevelKey, StringComparison.OrdinalIgnoreCase))
