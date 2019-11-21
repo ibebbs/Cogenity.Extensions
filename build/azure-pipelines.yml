@@ -10,14 +10,14 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
- - pwsh: |
-    If ("$(Build.SourceBranch)" -eq "refs/heads/master") {
-      Write-Host "##vso[task.setvariable variable=buildConfiguration;]Release"
-    }
-    If ("$(Build.SourceBranch)" -eq "refs/heads/develop") {
-      Write-Host "##vso[task.setvariable variable=buildConfiguration;]Debug"
-    }
- - script: echo building configuration $(buildConfiguration)
+- pwsh: |
+   If ("$(Build.SourceBranch)" -eq "refs/heads/master") {
+     Write-Host "##vso[task.setvariable variable=buildConfiguration;]Release"
+   }
+   If ("$(Build.SourceBranch)" -eq "refs/heads/develop") {
+     Write-Host "##vso[task.setvariable variable=buildConfiguration;]Debug"
+   }
+- script: echo building configuration $(buildConfiguration)
 
 - task: GitVersion@5
   displayName: 'GitVersion'
