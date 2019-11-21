@@ -44,7 +44,7 @@ namespace Cogenity.Extensions.Logging.EventSource
                 {
                     var eventLevel = option.LogLevel.ToEventLevel();
 
-                    _logger.LogInformation($"Enabling logging for EventSource '{eventSource.Name} at level 'eventLevel'");
+                    _logger.LogInformation($"Enabling logging for EventSource '{eventSource.Name} at level '{eventLevel}'");
 
                     var logger = _loggerFactory.CreateLogger(eventSource.Name);
 
