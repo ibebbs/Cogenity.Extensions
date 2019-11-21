@@ -25,12 +25,6 @@ namespace Cogenity.Extensions.Logging.EventSource
             }
         }
 
-        [Tracing.NonEvent]
-        public void EnablingEventSource(string eventSource, Tracing.EventLevel eventLevel)
-        {
-            EnablingEventSource(eventSource, (int)eventLevel);
-        }
-
         [Tracing.Event(3, Level = Tracing.EventLevel.Informational, Message = "Disabling logging for EventSource '{0}'")]
         public void DisablingEventSource(string eventSource)
         {
@@ -38,6 +32,14 @@ namespace Cogenity.Extensions.Logging.EventSource
             {
                 WriteEvent(3, eventSource);
             }
+        }
+    }
+
+    public static class TraceExtensions
+    {
+        public static void EnablingEventSource(this Trace trace, string eventSource, Tracing.EventLevel eventLevel)
+        {
+            trace.EnablingEventSource(eventSource, (int)eventLevel);
         }
     }
 }
