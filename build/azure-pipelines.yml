@@ -66,7 +66,7 @@ steps:
     command: push
     nuGetFeedType: internal
     publishVstsFeed: NstrumentPackages
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     verbosityPush: detailed
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
 
