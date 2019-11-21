@@ -17,8 +17,7 @@ steps:
     If ("$(Build.SourceBranch)" -eq "refs/heads/develop") {
       Write-Host "##vso[task.setvariable variable=buildConfiguration;]Debug"
     }
- - script: | 
-    echo building configuration $(buildConfiguration)
+ - script: echo building configuration $(buildConfiguration)
 
 - task: GitVersion@5
   displayName: 'GitVersion'
