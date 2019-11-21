@@ -49,12 +49,24 @@ steps:
   displayName: 'Restore Cogenity.Extensions.Logging.EventSource.csproj'
 - script: dotnet build src/Cogenity.Extensions.Logging.EventSource/Cogenity.Extensions.Logging.EventSource.csproj --configuration $(buildConfiguration) /p:Version='$(GitVersion.SemVer)'
   displayName: 'Build Cogenity.Extensions.Logging.EventSource.csproj'
-- script: dotnet pack src/Cogenity.Extensions.Logging.EventSource/Cogenity.Extensions.Logging.EventSource.csproj --configuration $(buildConfiguration) --include-symbols --include-source -o '$(Build.ArtifactStagingDirectory)' /p:Version='$(GitVersion.NuGetVersionV2)'
-  displayName: 'Pack Cogenity.Extensions.Logging.EventSource.csproj for Debug'
-  condition: eq(variables['buildConfiguration'], 'Debug')
 - script: dotnet pack src/Cogenity.Extensions.Logging.EventSource/Cogenity.Extensions.Logging.EventSource.csproj --configuration $(buildConfiguration) -o '$(Build.ArtifactStagingDirectory)' /p:Version='$(GitVersion.NuGetVersionV2)'
-  displayName: 'Pack Cogenity.Extensions.Logging.EventSource.csproj for Release'
-  condition: eq(variables['buildConfiguration'], 'Release')
+  displayName: 'Pack Cogenity.Extensions.Logging.EventSource.csproj'
+
+- task: PublishSymbols@2
+  inputs:
+    #symbolsFolder: '$(Build.SourcesDirectory)' # Optional
+    #searchPattern: '**/bin/**/*.pdb' 
+    #indexSources: true # Optional
+    #publishSymbols: true # Optional
+    #symbolServerType: ' ' # Required when publishSymbols == True# Options:  , teamServices, fileShare
+    #symbolsPath: # Optional
+    #compressSymbols: false # Required when symbolServerType == FileShare
+    #detailedLog: true # Optional
+    #treatNotIndexedAsWarning: false # Optional
+    #symbolsMaximumWaitTime: # Optional
+    #symbolsProduct: # Optional
+    #symbolsVersion: # Optional
+    #symbolsArtifactName: 'Symbols_$(BuildConfiguration)' # Optional
 
 - task: PublishBuildArtifacts@1
   inputs:
