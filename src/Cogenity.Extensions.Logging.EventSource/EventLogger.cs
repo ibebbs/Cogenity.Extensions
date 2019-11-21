@@ -10,67 +10,61 @@ namespace Cogenity.Extensions.Logging.EventSource
 {
     public class EventLogger : EventListener
     {
-        private const int Disabled = 0;
-        private const int Enabled = 1;
-
         private readonly ConcurrentDictionary<string, ILogger> _loggers = new ConcurrentDictionary<string, ILogger>();
         private readonly ConcurrentDictionary<string, System.Diagnostics.Tracing.EventSource> _eventSources = new ConcurrentDictionary<string, System.Diagnostics.Tracing.EventSource>();
 
-        private readonly EventLoggerFilterOptions _options;
         private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger<EventLogger> _logger;
 
-        private int _enabled = Disabled;
+        private EventLoggerFilterOptions _options;
 
-        public EventLogger(IOptions<EventLoggerFilterOptions> options, ILoggerFactory loggerFactory)
+        public EventLogger(IOptionsMonitor<EventLoggerFilterOptions> options, ILoggerFactory loggerFactory)
         {
-            _options = options.Value;
             _loggerFactory = loggerFactory;
-            _logger = loggerFactory.CreateLogger<EventLogger>();
+
+            options.OnChange((options, name) => OptionsChanged(options));
+            OptionsChanged(options.CurrentValue);
         }
 
-        private void EnableEventSource(System.Diagnostics.Tracing.EventSource eventSource)
+        private void OptionsChanged(EventLoggerFilterOptions options)
         {
-            if (_enabled == Enabled)
+            _options = options;
+
+            foreach (var eventSource in _eventSources.Values)
             {
-                _logger.LogDebug($"Enabling EventSource '{eventSource.Name}'");
-
-                var option = (_options?.Rules ?? Enumerable.Empty<LoggerFilterRule>())
-                    .Where(rule => !string.IsNullOrWhiteSpace(rule.CategoryName) && eventSource.Name.StartsWith(rule.CategoryName, StringComparison.OrdinalIgnoreCase))
-                    .OrderByDescending(rule => rule.CategoryName.Length)
-                    .FirstOrDefault();
-
-                if (option != null && (option.LogLevel ?? LogLevel.None) != LogLevel.None)
-                {
-                    var eventLevel = option.LogLevel.ToEventLevel();
-
-                    _logger.LogInformation($"Enabling logging for EventSource '{eventSource.Name} at level '{eventLevel}'");
-
-                    var logger = _loggerFactory.CreateLogger(eventSource.Name);
-
-                    _loggers.TryAdd(eventSource.Name, logger);
-
-                    EnableEvents(eventSource, eventLevel, EventKeywords.All);
-                }
-                else
-                {
-                    _logger.LogDebug($"No option specified for EventSource '{eventSource.Name}'. No logging will be performed.");
-                }
+                UpdateEventSource(eventSource);
             }
         }
 
-        private void DisableEventSource(System.Diagnostics.Tracing.EventSource eventSource)
+        private void UpdateEventSource(System.Diagnostics.Tracing.EventSource eventSource)
         {
-            _loggers.TryRemove(eventSource.Name, out ILogger _);
+            Trace.Event.UpdatingEventSource(eventSource.Name);
 
-            DisableEvents(eventSource);
-        }
+            var option = (_options?.Rules ?? Enumerable.Empty<LoggerFilterRule>())
+                .Where(rule => !string.IsNullOrWhiteSpace(rule.CategoryName) && eventSource.Name.StartsWith(rule.CategoryName, StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(rule => rule.CategoryName.Length)
+                .FirstOrDefault();
 
-        protected override void OnEventSourceCreated(System.Diagnostics.Tracing.EventSource eventSource)
-        {
-            _eventSources.TryAdd(eventSource.Name, eventSource);
+            if (option != null && (option.LogLevel ?? LogLevel.None) != LogLevel.None)
+            {
+                var eventLevel = option.LogLevel.ToEventLevel();
 
-            EnableEventSource(eventSource);
+                var logger = _loggerFactory.CreateLogger(eventSource.Name);
+
+                if (_loggers.TryAdd(eventSource.Name, logger))
+                {
+                    Trace.Event.EnablingEventSource(eventSource.Name, eventLevel);
+                    EnableEvents(eventSource, eventLevel, EventKeywords.All);
+                }
+
+            }
+            else
+            {
+                if (_loggers.TryRemove(eventSource.Name, out ILogger _))
+                {
+                    Trace.Event.DisablingEventSource(eventSource.Name);
+                    DisableEvents(eventSource);
+                }
+            }
         }
 
         private string Message(EventWrittenEventArgs eventData)
@@ -87,6 +81,13 @@ namespace Cogenity.Extensions.Logging.EventSource
             };
         }
 
+        protected override void OnEventSourceCreated(System.Diagnostics.Tracing.EventSource eventSource)
+        {
+            _eventSources.TryAdd(eventSource.Name, eventSource);
+
+            UpdateEventSource(eventSource);
+        }
+
         protected override void OnEventWritten(EventWrittenEventArgs eventData)
         {
             if (_loggers.TryGetValue(eventData.EventSource.Name, out ILogger logger))
@@ -94,28 +95,6 @@ namespace Cogenity.Extensions.Logging.EventSource
                 var message = _options.CaptureScopes ? Message(eventData) : eventData.Message;
 
                 logger.Log(eventData.Level.ToLogLevel(), eventData.EventId, message, eventData.Payload.ToArray());                
-            }
-        }
-
-        public void Enable()
-        {
-            if (Interlocked.CompareExchange(ref _enabled, Enabled, Disabled) == Disabled)
-            {
-                foreach (System.Diagnostics.Tracing.EventSource eventSource in _eventSources.Values)
-                {
-                    EnableEventSource(eventSource);
-                }
-            }
-        }
-
-        public void Disable()
-        {
-            if (Interlocked.CompareExchange(ref _enabled, Disabled, Enabled) == Enabled)
-            {
-                foreach (System.Diagnostics.Tracing.EventSource eventSource in _eventSources.Values)
-                {
-                    DisableEventSource(eventSource);
-                }
             }
         }
     }

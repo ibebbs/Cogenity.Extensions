@@ -7,8 +7,10 @@ namespace Cogenity.Extensions.Logging.EventSource
     {
         public ApplicationLifetimeEx(ILogger<ApplicationLifetime> logger, EventLogger eventLogger) : base(logger)
         {
-            ApplicationStarted.Register(state => ((EventLogger)state).Enable(), eventLogger);
-            ApplicationStopping.Register(state => ((EventLogger)state).Disable(), eventLogger);
+            // Take a reference to event logger just to ensure it's not optimised away
+            EventLogger = eventLogger;
         }
+
+        public EventLogger EventLogger { get; }
     }
 }
