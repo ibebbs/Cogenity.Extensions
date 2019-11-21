@@ -3,7 +3,7 @@ trigger:
 - develop
 
 pool:
-  vmImage: 'ubuntu-16.04'
+  vmImage: 'windows-latest'
 
 variables:
   buildPlatform: 'Any CPU'
@@ -58,7 +58,7 @@ steps:
     searchPattern: '**/bin/**/*.pdb' 
     indexSources: true # Optional
     publishSymbols: true # Optional
-    symbolServerType: ' ' # Required when publishSymbols == True# Options:  , teamServices, fileShare
+    symbolServerType: 'TeamServices' # Required when publishSymbols == True# Options:  , teamServices, fileShare
     #symbolsPath: # Optional
     #compressSymbols: false # Required when symbolServerType == FileShare
     detailedLog: true # Optional
