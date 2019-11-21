@@ -3,7 +3,7 @@ trigger:
 - develop
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-16.04'
 
 variables:
   buildPlatform: 'Any CPU'
