@@ -12,6 +12,8 @@ namespace Cogenity.Extensions.Logging.EventSource
 
         public static IHostBuilder UseEventSourceLogging(this IHostBuilder hostBuilder, string configurationSection = null)
         {
+            Trace.Event.EventSourceLoggingEnabled();
+
             return hostBuilder.ConfigureServices(
                 (hostBuilderContext, serviceCollection) =>
                 {
