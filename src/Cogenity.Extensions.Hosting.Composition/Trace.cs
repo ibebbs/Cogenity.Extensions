@@ -16,7 +16,7 @@ namespace Microsoft.Extensions.Hosting.Composition
 
         #region Loader
 
-        [Event(1, Level = EventLevel.Verbose, Opcode = EventOpcode.Start, Keywords = Keywords.Loader, Message = "Starting to load module '{0}' from path '{1}'")]
+        [Event(1, Level = EventLevel.Verbose, ActivityOptions = EventActivityOptions.Recursive | EventActivityOptions.Detachable, Opcode = EventOpcode.Start, Keywords = Keywords.Loader, Message = "Starting to load module '{0}' from path '{1}'")]
         public void LoadModuleStart(string module, string path)
         {
             if (IsEnabled(EventLevel.Verbose, Keywords.Loader))
@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.Hosting.Composition
             }
         }
 
-        [Event(2, Level = EventLevel.Verbose, Opcode = EventOpcode.Start, Keywords = Keywords.Loader, Message = "Completed loading module '{0}' from path '{1}'")]
+        [Event(2, Level = EventLevel.Verbose, ActivityOptions = EventActivityOptions.Recursive | EventActivityOptions.Detachable, Opcode = EventOpcode.Start, Keywords = Keywords.Loader, Message = "Completed loading module '{0}' from path '{1}'")]
         public void LoadModuleStop(string module, string path)
         {
             if (IsEnabled(EventLevel.Verbose, Keywords.Loader))
@@ -47,7 +47,7 @@ namespace Microsoft.Extensions.Hosting.Composition
 
         #region LoadContext
 
-        [Event(11, Level = EventLevel.Verbose, Opcode = EventOpcode.Start, Keywords = Keywords.LoadContext, Message = "Starting to load assembly '{0}'")]
+        [Event(11, Level = EventLevel.Verbose, ActivityOptions = EventActivityOptions.Recursive | EventActivityOptions.Detachable, Opcode = EventOpcode.Start, Keywords = Keywords.LoadContext, Message = "Starting to load assembly '{0}'")]
         public void AssemblyLoadStart(string assembly)
         {
             if (IsEnabled(EventLevel.Verbose, Keywords.LoadContext))
@@ -56,7 +56,7 @@ namespace Microsoft.Extensions.Hosting.Composition
             }
         }
 
-        [Event(12, Level = EventLevel.Verbose, Opcode = EventOpcode.Stop, Keywords = Keywords.LoadContext, Message = "Completed loading of assembly '{0}'")]
+        [Event(12, Level = EventLevel.Verbose, ActivityOptions = EventActivityOptions.Recursive | EventActivityOptions.Detachable, Opcode = EventOpcode.Stop, Keywords = Keywords.LoadContext, Message = "Completed loading of assembly '{0}'")]
         public void AssemblyLoadStop(string assembly)
         {
             if (IsEnabled(EventLevel.Verbose, Keywords.LoadContext))
