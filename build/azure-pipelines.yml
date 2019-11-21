@@ -10,6 +10,16 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+ - pwsh: |
+    If ("$(Build.SourceBranch)" -eq "refs/heads/master") {
+      Write-Host "##vso[task.setvariable variable=buildConfiguration;]Release"
+    }
+    If ("$(Build.SourceBranch)" -eq "refs/heads/develop") {
+      Write-Host "##vso[task.setvariable variable=buildConfiguration;]Debug"
+    }
+ - script: | 
+    echo building configuration $(buildConfiguration)
+
 - task: GitVersion@5
   displayName: 'GitVersion'
   inputs:
@@ -40,8 +50,12 @@ steps:
   displayName: 'Restore Cogenity.Extensions.Logging.EventSource.csproj'
 - script: dotnet build src/Cogenity.Extensions.Logging.EventSource/Cogenity.Extensions.Logging.EventSource.csproj --configuration $(buildConfiguration) /p:Version='$(GitVersion.SemVer)'
   displayName: 'Build Cogenity.Extensions.Logging.EventSource.csproj'
+- script: dotnet pack src/Cogenity.Extensions.Logging.EventSource/Cogenity.Extensions.Logging.EventSource.csproj --configuration $(buildConfiguration) --include-symbols --include-source -o '$(Build.ArtifactStagingDirectory)' /p:Version='$(GitVersion.NuGetVersionV2)'
+  displayName: 'Pack Cogenity.Extensions.Logging.EventSource.csproj for Debug'
+  condition: eq(variables['buildConfiguration'], 'Debug')
 - script: dotnet pack src/Cogenity.Extensions.Logging.EventSource/Cogenity.Extensions.Logging.EventSource.csproj --configuration $(buildConfiguration) -o '$(Build.ArtifactStagingDirectory)' /p:Version='$(GitVersion.NuGetVersionV2)'
-  displayName: 'Pack Cogenity.Extensions.Logging.EventSource.csproj'
+  displayName: 'Pack Cogenity.Extensions.Logging.EventSource.csproj for Release'
+  condition: eq(variables['buildConfiguration'], 'Release')
 
 - task: PublishBuildArtifacts@1
   inputs:
