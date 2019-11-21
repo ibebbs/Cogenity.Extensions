@@ -23,7 +23,7 @@ namespace Cogenity.Extensions.Logging.EventSource
         }
 
         [Tracing.Event(3, Level = Tracing.EventLevel.Informational, Message = "Enabling logging for EventSource '{0}' at level '{1}'")]
-        public void EnablingEventSource(string eventSource, int eventLevel)
+        public void EnablingEventSource(string eventSource, string eventLevel)
         {
             if (IsEnabled(Tracing.EventLevel.Informational, Tracing.EventKeywords.All))
             {
@@ -45,7 +45,7 @@ namespace Cogenity.Extensions.Logging.EventSource
     {
         public static void EnablingEventSource(this Trace trace, string eventSource, Tracing.EventLevel eventLevel)
         {
-            trace.EnablingEventSource(eventSource, (int)eventLevel);
+            trace.EnablingEventSource(eventSource, eventLevel.ToString());
         }
     }
 }
