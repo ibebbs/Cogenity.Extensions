@@ -17,12 +17,18 @@ namespace Cogenity.Extensions.Logging.EventSource
         }
 
         [Tracing.Event(2, Level = Tracing.EventLevel.Informational, Message = "Enabling logging for EventSource '{0}' at level '{1}'")]
-        public void EnablingEventSource(string eventSource, Tracing.EventLevel eventLevel)
+        public void EnablingEventSource(string eventSource, int eventLevel)
         {
             if (IsEnabled(Tracing.EventLevel.Informational, Tracing.EventKeywords.All))
             {
                 WriteEvent(2, eventSource, eventLevel);
             }
+        }
+
+        [Tracing.NonEvent]
+        public void EnablingEventSource(string eventSource, Tracing.EventLevel eventLevel)
+        {
+            EnablingEventSource(eventSource, (int)eventLevel);
         }
 
         [Tracing.Event(3, Level = Tracing.EventLevel.Informational, Message = "Disabling logging for EventSource '{0}'")]
